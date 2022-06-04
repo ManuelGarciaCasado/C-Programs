@@ -1,0 +1,92 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: circulo - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ManuelGC\CONFIG~1\Temp\RSP4F3.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/circulo.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ManuelGC\CONFIG~1\Temp\RSP4F3.tmp" 
+<h3>Output Window</h3>
+Compiling...
+circulo.C
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(74) : error C2065: 'originalImage' : undeclared identifier
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(74) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(74) : warning C4013: 'getImageInfo' undefined; assuming extern returning int
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(74) : error C2065: 'bmpInput' : undeclared identifier
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(75) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(77) : error C2065: 'edgeImage' : undeclared identifier
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(77) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(77) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(78) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(78) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(81) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(82) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(92) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(92) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(95) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(96) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(102) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(103) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(110) : warning C4013: 'copyImageInfo' undefined; assuming extern returning int
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(110) : error C2065: 'bmpOutput' : undeclared identifier
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(111) : warning C4013: 'copyColorTable' undefined; assuming extern returning int
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(112) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(112) : warning C4024: 'fseek' : different types for formal and actual parameter 1
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(113) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(113) : warning C4024: 'fseek' : different types for formal and actual parameter 1
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(116) : error C2065: 'row' : undeclared identifier
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(116) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(117) : error C2065: 'col' : undeclared identifier
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(117) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(119) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(119) : warning C4024: 'fread' : different types for formal and actual parameter 4
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(121) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(121) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(132) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(133) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(140) : error C2224: left of '.rows' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(142) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(151) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(151) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(161) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(161) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(180) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(180) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(181) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(181) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(181) : warning C4022: 'fwrite' : pointer mismatch for actual parameter 1
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(181) : error C2198: 'fwrite' : too few actual parameters
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(184) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(184) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(185) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(185) : error C2224: left of '.cols' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(185) : warning C4022: 'fwrite' : pointer mismatch for actual parameter 1
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(185) : error C2198: 'fwrite' : too few actual parameters
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(192) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(192) : warning C4024: 'fclose' : different types for formal and actual parameter 1
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(193) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(193) : warning C4024: 'fclose' : different types for formal and actual parameter 1
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(194) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(194) : error C2198: 'free' : too few actual parameters
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(195) : error C2224: left of '.data' must have struct/union type
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(195) : error C2198: 'free' : too few actual parameters
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(219) : error C2065: 'uInput' : undeclared identifier
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(219) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(219) : warning C4024: 'fseek' : different types for formal and actual parameter 1
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(226) : error C2371: 'copyImageInfo' : redefinition; different basic types
+C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\circulo.C(247) : error C2371: 'copyColorTable' : redefinition; different basic types
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+circulo.obj - 49 error(s), 17 warning(s)
+</pre>
+</body>
+</html>

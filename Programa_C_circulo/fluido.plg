@@ -1,0 +1,45 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: fluido - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\ManuelGC\CONFIG~1\Temp\RSP52E.tmp" with contents
+[
+/nologo /MLd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/fluido.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"C:\Documents and Settings\ManuelGC\Escritorio\Programa_C_circulo\fluido.C"
+]
+Creating command line "cl.exe @C:\DOCUME~1\ManuelGC\CONFIG~1\Temp\RSP52E.tmp" 
+<h3>Output Window</h3>
+Compiling...
+fluido.C
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(67) : error C2065: 'originalImage' : undeclared identifier
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(67) : error C2224: left of '.cols' must have struct/union type
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(68) : error C2224: left of '.rows' must have struct/union type
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(71) : warning C4013: 'getImageInfo' undefined; assuming extern returning int
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(71) : error C2065: 'bmpInput' : undeclared identifier
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(144) : error C2065: 'bmpOutput' : undeclared identifier
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(144) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(144) : warning C4024: 'fclose' : different types for formal and actual parameter 1
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(152) : warning C4029: declared formal parameter list different from definition
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(158) : error C2065: 'pFile' : undeclared identifier
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(158) : warning C4047: 'function' : 'struct _iobuf *' differs in levels of indirection from 'int '
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(158) : warning C4024: 'fgetc' : different types for formal and actual parameter 1
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(164) : error C2059: syntax error : ','
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(164) : error C2143: syntax error : missing ')' before 'constant'
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(164) : error C2143: syntax error : missing '{' before 'constant'
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(164) : error C2059: syntax error : '<Unknown>'
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(164) : error C2059: syntax error : ')'
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(165) : error C2059: syntax error : 'return'
+c:\documents and settings\manuelgc\escritorio\programa_c_circulo\fluido.c(167) : error C2059: syntax error : '}'
+Error executing cl.exe.
+
+
+
+<h3>Results</h3>
+fluido.obj - 13 error(s), 6 warning(s)
+</pre>
+</body>
+</html>
