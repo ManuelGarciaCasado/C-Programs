@@ -1,0 +1,11 @@
+﻿  CampoB.cpp
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(43,11): warning C4101: 'coordenadas': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(48,9): warning C4101: 'R': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(54,10): warning C4101: 'modlamb': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(57,10): warning C4101: 'aux2': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(56,10): warning C4101: 'aux1': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(50,9): warning C4101: 'c': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(47,9): warning C4101: 'C': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(240,10): warning C4101: 'aux2': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(239,10): warning C4101: 'aux1': variable local sin referencia
+  CampoB.vcxproj -> C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\x64\Debug\CampoB.exe

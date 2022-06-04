@@ -1,0 +1,36 @@
+﻿  CampoB.cpp
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(65,11): warning C4101: 'coordenadas': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(50,9): warning C4101: 'vin': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(48,9): warning C4101: 'pborde': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(64,9): warning C4101: 'mostrarvalores': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(61,9): warning C4101: 'matrizfunciones': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(55,9): warning C4101: 'wout': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(47,9): warning C4101: 'wborde': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(52,9): warning C4101: 'pin': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(60,9): warning C4101: 'matrizjacobiana': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(54,9): warning C4101: 'vout': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(51,9): warning C4101: 'win': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(70,10): warning C4101: 'modlamb': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(56,9): warning C4101: 'pout': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(42,9): warning C4101: 'vt0': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(49,9): warning C4101: 'uin': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(44,9): warning C4101: 'pt0': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(73,10): warning C4101: 'aux2': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(72,10): warning C4101: 'aux1': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(59,6): warning C4101: 'incognitas': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(58,9): warning C4101: 'jacobiano': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(53,9): warning C4101: 'uout': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(41,9): warning C4101: 'ut0': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(45,9): warning C4101: 'uborde': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(74,8): warning C4101: 'fp': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(46,9): warning C4101: 'vborde': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(43,9): warning C4101: 'wt0': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(40,9): warning C4101: 'variables': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(57,9): warning C4101: 'funciones': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(101,7): error C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(200,4): error C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(204,4): error C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(97,10): warning C4101: 'aux2': variable local sin referencia
+C:\Users\Manuel III\Documents\Visual Studio 2019\CampoB\CampoB.cpp(96,10): warning C4101: 'aux1': variable local sin referencia
+  stdafx.cpp
+  Generando código...
