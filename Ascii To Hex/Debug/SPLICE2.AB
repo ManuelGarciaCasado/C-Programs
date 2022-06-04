@@ -1,0 +1,701 @@
+' Splice together traces with different X ranges.
+' (c)1994 Galactic Industries Corp. Copying permitted for use with GRAMS/386(tm).
+
+	free
+	portin -20,ver
+	if ver>=20300 goto 1
+	dialogon "ERROR!"
+	print "This application requires GRAMS/386 V3.0 or higher."
+	print " "
+	dialogloc 3,0 : input >mc,4,0,0,"|___&OK___"
+	dialogoff
+
+1	onpaint 0 : portout -44,0				   'pretty errors
+	if getsfile()=0 goto 5
+	free icon : dim icon(256)
+	icon=0 : string icon,-59
+	string icon=$icon+"ABICONS.DLL#2"		'get icon
+	dialogon "Splice Memory Warning"
+	dialogloc 1,-70,8  : dialogtxt 1,0,0,$icon
+	dialogloc 1,-40,6  : print "SPLICE requires all memory slots to be empty."
+	dialogloc 1,-40,16 : print "Pressing 'OK' will clear all data from memory!"
+	dialogloc 3,0,30
+	dialogoff
+	setfile 1
+2	if getsfile()<>0 then noshow : goto 2
+
+'File select and loader
+5	dim file(256),temp(256),flags(8)
+	chain "user.exe","GetDoubleClickTime"		'get the mouse double click time (in mS)
+	dclk=v/1000					'convert into Secs
+	viewstore					'save current view
+	viewload					'load default view
+	viewedit -2,1					'clear entire view
+	viewedit -4,silver				'silver screen bkgrd
+	see
+	fc=0 : le=1e99 : re=-1e99 : by=1e99 : ty=-1e99
+
+7	onerror 10000
+	menufile $file,"Select Files to Splice (Use File List)", 2
+
+	onerror 20					'trap no more files in list
+10	loadspc $file
+	if getffp()>getflp() then xflip : setleft getffp(),getflp()	'always lo->hi!
+	fc=fc+1
+	portin -140,k : mc=k				'separate header flags
+	for i=7 to 0 step -1
+	  flags(i)=int(mc/(2^i))
+	  mc=mc-flags(i)*(2^i)
+	next
+	if fc>1 goto 15 				'use 1st file to determine:
+	  xt=getxtype() : yt=getytype() 		'axes unit types
+	  if flags(7) then xy=true			'XY or even spaced
+	  ttyp=k					'keep trace type
+
+15	if getxtype()<>xt or getytype()<>yt then err=1 goto 9000  'units match?
+	if (flags(7)<>0)<>xy then err=2 : goto 9000		  'data spacing match?
+	onerror 17					'(301JHD) add support for XDP values
+	xkey=2560 : i=#s.#xkey(0)			'col key for 'X' column
+	onerror -1 : goto 19
+17	xkey=3728					'col key for 'XDP' column
+19	if #s.#xkey(0)<le then le=#s.#xkey(0)		'find X limits to display ALL files
+	if #s.#xkey(npts(#s)-1)>re then re=#s.#xkey(npts(#s)-1)
+	onerror 20
+	if min(#s)<by then by=min(#s)
+	if max(#s)>ty then ty=max(#s)
+	menufile $file,"",3				'read next from list
+	if fc=29 goto 20				'only 30 slots & we need 1 for result
+	goto 10 					'go back up, load it, repeat tests
+
+'Build the View, order files in slots by increasing FFP, get filenames
+20	if fc<=1 then err=3 : goto 9000
+	onerror -1 : onesc 10000			'general error trap
+	if v<>-27 goto 10000				'file list empty or diff error?
+
+	dim clr(8)
+	clr(0)=olive : clr(1)=violet : clr(2)=red : clr(3)=navy
+	clr(4)=brown : clr(5)=aqua : clr(6)=purple : clr(7)=grey
+	portout -66,0					'force same-Y overlay
+
+	viewedit 1,0.1,0.3,0.87,0.5,1,1,#0,clr(0),0,1	'top Ovly box
+	viewedit 0,1,17,white : viewedit 0,1,15,black	'white trace bkgrd & black axes
+	viewedit 0,1,16,black				'black text
+	viewedit 0,1,30,0				'no grids
+	viewedit 2,0.1,0.3,0.87,0.5,1,1,#0		'add in Y axis
+	viewedit 0,2,15,black : viewedit 0,2,16,black	'black axes & text
+
+	blx=0.1 : bby=0.075 : brx=0.97 : bty=0.3	'bottom box for spliced data
+	viewedit 1,blx,bby,(brx-blx),(bty-bby),0,0,#0,blue,0,5
+	viewedit 0,3,17,white : viewedit 0,3,15,black	'white trace bkgrd & black axes
+	viewedit 0,3,16,black				'black text
+	viewedit 0,3,24,10: viewedit 0,3,26,8		'10-X & 8-Y ticks
+
+	dim sname(fc,256),cpt(fc-1) : res=1e99 : np=0
+	for i=1 to fc					'order the slots such that
+	  setfile i : lx=getffp()			'FFP values increase as slot
+	  if i=fc goto 25
+	  for j=i+1 to fc				'number increases - find max res
+	    setfile j					'at same time
+	    if getffp()<lx then lx=getffp() : swapfile #i,#j
+	  next j
+	  setfile i : cpt(i-1)=getflp() 		'initial points for CHOP
+25	  setfile i : setcolor clr((i-1)-int((i-1)/8)*8)    'set colors
+	  string sname(i-1), -1 			'keep track of file names
+	  mc=abs(getffp()-getflp())/(npts(#s)-1)
+	  if mc<res then res=mc : rf=i			'find slot with highest res file
+	  np=np+npts(#s)				'calc total # points (in case XY)
+	next i
+
+'X Limits go hi-lo for Wavenum, PPM and Raman; go lo-hi for all others
+	if (xt=1 or xt=10 or xt=13) and le<re then mc=le : le=re : re=mc
+	if (xt<>1 and xt<>10 and xt<>13) and le>re then mc=le : le=re : re=mc
+
+'Put file numbers in view
+	viewtrace 1
+	for i=1 to fc
+	  setfile i : setleft le,re
+	  fp=getffp() : lp=getflp()
+	  fp=((((fp+(lp-fp)/2)-getleft()))/(getright()-getleft()))*(brx-blx)+blx  'calc midpt
+	  temp=0 : v=i : string temp,-19
+	  viewedit 5,fp,0.75,$temp,black,white,1,18443,-9503,0	'Arial 11 bold
+	next i
+	viewtrace 0
+
+'Finish up and create big file
+	setfile 1 : setcolor clr(0)			'handle 1st file
+	gosub 2100					'create big file
+
+'Interpolate even files to match resolution of big file
+	for i=2 to fc+1
+	  viewtrace 1 : setfile i
+	  if not(xy) then #i=(#1*0)+#i
+	next i
+
+'Options dialog box
+'NOTE: No "SEE" statement is required above, since 1st call to DIALOGSET routine
+'at line label 35 calls the calculate and display routine.
+30	string temp="Absolute_Y_file: None"
+	for i=1 to fc
+	  string temp=$temp+" "+i
+	next i
+
+	zt=ol : onerror 80
+	dialogbeg "Splice Options"
+	dialogloc 0,-60,4  : dialogask im,3+128,0,0,"Interpolation: Auto Define"
+	dialogloc 0,60,4   : dialogask np,1,3,1e38,"Number of points"
+	dialogloc 0,-60,20 : dialogask ar,3+128,0,0,$temp
+	dialogloc 0,60,20  : dialogask zt,3+128,0,0,"Overlap_merging: Weighted Average Regress Chop"
+	dialogloc 1,120,20 : dialogask mc,4,60,0,"Points"
+	dialogloc 3,0,40   : dialogask mc,4,40,50,"Display ___&OK___ |Cancel Help"
+34	dialogoff 12,0,35
+
+'Dialog options & grey/un-grey
+35	if not(xy) and im=0 then np=abs((re-le)/res)+1
+	if im=0 then dialogset 1+16,2,0,np else dialogset 8,2
+	if xy then dialogset 256,2 : dialogset 256,1
+	if xy then dialogset 1+16,1,0,0 : dialogset 16,2 : dialogset 1+16,4,0,3 : zt=3
+	if zt<>3 then dialogset 256,5 else dialogset 128,5
+	if (zt=3 and ol<3) or (zt<3 and ol=3) then gosub 2500 : ol=zt
+	dialogset 64+32,6,1			
+	ol=zt
+	gosub 1900
+	string "  Splice  |  Set file splicing parameters.",-61
+	update=false : goto 34	
+
+'Dialog button handler
+40	onerror -1				'Display
+	gosub 1900 : goto 34
+50	onerror -1 : dialogoff -10		'OK, all done
+	gosub 1900 : goto 10000
+60	onerror -1 : dialogoff -10		'Points - select new chop points
+	escoff 1 : waiton
+	gosub 2000
+65	if ar<>0 then gosub 2200
+	escoff 0 : waitoff
+	gosub 2400 : goto 30
+70	chelp "GRAMSSUITE.CHM",5800		'Help
+	goto 34
+80	update=false : goto 10000		'Cancel
+
+'********************
+'Splicing subroutines
+'********************
+'The traces in slots 2 to 2+fc-1 are the data to splice together.  The X
+'axis MUST be in lo-to-hi orientation for these subroutines to work.
+
+'**********
+'WEIGHTED  - Splice by slope/average of points in overlap region (Evenly spaced only!)
+1000	free tz,tf
+	setfile 2 : rsp=getflp()
+	setfile 1 : #s(getleft(),rsp)=row(#2(getleft(),rsp))
+	for f2=3 to fc+1
+	  f1=f2-1
+	  setfile f1 : rsp=getflp()
+	  setfile f2 : lsp=getffp() : rep=getflp()
+	  dim tf(npts(#f2)) : tf=#f2			'copy next data to temp array
+	  if (lsp>rsp) and abs(lsp-rsp)>(abs(lsp-rep)*0.5)/(npts(#f2)-1) goto 1050	'no overlap? (301JHD)
+	  if npts(#s(lsp,rsp))=1 then tf(0)=((#1(rsp)+#s(lsp))/2)-#1(rsp) : goto 1050	'avg if only 1 pt (301JHD)
+1020	  nt=npts(#s(lsp,rsp)) : dim tz(nt)		'overlap, calc weighting func
+	  fillbeg 1 : fillinc neg(1/(nt-1))
+	  tz=fill(tz)
+	  #1(lsp,rsp)=#1(lsp,rsp)*tz			'slope right end of data in big file
+	  tz=neg(tz)+1					'copy data to temp array
+	  tf=tf*tz					'inverse slope left end of temp array
+1050	  #1(lsp,rep)=#1(lsp,rep)+tf			'add next segment to big file
+	  free tz,tf
+	  if lsp<rsp then #f1(lsp,rsp)=row(#1(lsp,rsp)) : #f2(lsp,rsp)=row(#1(lsp,rsp))   'replace ends with wghtd
+	next f2 : setleft le,re
+	return
+
+'***********
+'AVERAGE - Splice by averaging paired points in overlapped region (Evenly spaced only!)
+1100	free tz,tf
+	setfile 2 : rsp=getflp()
+	setfile 1 : #s(getleft(),rsp)=row(#2(getleft(),rsp))
+	for f2=3 to fc+1
+	  f1=f2-1
+	  setfile f1 : rsp=getflp()
+	  setfile f2 : lsp=getffp() : rep=getflp()
+	  dim tf(npts(#f2)) : tf=#f2			'copy next data to temp array
+	  if (lsp>rsp) and abs(lsp-rsp)>(abs(lsp-rep)*0.5)/(npts(#f2)-1) goto 1150	'no overlap? (301JHD)
+	  if npts(#s(lsp,rsp))=1 then tf(0)=((#1(rsp)+#s(lsp))/2)-#1(rsp) : goto 1150	'avg if only 1 pt (301JHD)
+	  nt=npts(#s(lsp,rsp)) : dim tz(nt)
+	  tz=(#f1(lsp,rsp)+#f2(lsp,rsp))/2
+	  #f1(lsp,rsp)=tz : #f2(lsp,rsp)=tz		'replace ends of files with avgd points
+	  tf=#f2					'get data into tf (301JHD)
+1150	  #1(lsp,rsp)=0 				'zero out overlap points in big file
+	  #1(lsp,rep)=#1(lsp,rep)+tf			'add next segment to big file
+	  free tz,tf
+	next f2
+	return
+
+'***********
+'REGRESS - Splice by linear regression of points in overlap region (Evenly spaced only!)
+' Y=Next file, X=Previous file
+1200	free x,y,tz,tf
+	setfile 2 : rsp=getflp()
+	setfile 1 : #s(getleft(),rsp)=row(#2(getleft(),rsp))
+	for f2=3 to fc+1
+	  f1=f2-1
+	  setfile f1 : rsp=getflp()
+	  setfile f2 : lsp=getffp() : rep=getflp()
+	  dim tf(npts(#f2)) : tf=#f2			'copy next data to temp array
+	  if (lsp>rsp) and abs(lsp-rsp)>(abs(lsp-rep)*0.5)/(npts(#f2)-1) goto 1250	'no overlap? (301JHD)
+	  if npts(#s(lsp,rsp))=1 then tf(0)=((#1(rsp)+#s(lsp))/2)-#1(rsp) : goto 1250	'avg if only 1 pt (301JHD)
+	  nt=npts(#s(lsp,rsp)) : dim x(nt),y(nt)
+	  x=#f1(lsp,rsp) : y=#f2(lsp,rsp)
+	  den=(nt*sumd2(x,0))-squared(sum(x))
+	  m=((nt*sum(x*y))-(sum(x)*sum(y)))/den
+	  b=((sum(y)*sumd2(x,0))-(sum(x)*sum(x*y)))/den
+	  dim tz(nt)
+	  tz=x*m+b
+	  #1(lsp,rsp)=tz				'assign rgssn predict to end of big file
+	  tz=0
+	  tf=tf*tz					'blank left of temp array
+1250	  #1(lsp,rep)=#1(lsp,rep)+tf			'add next segment to big file
+	  free tz,tf,x,y
+	  if lsp<rsp then #f1(lsp,rsp)=row(#1(lsp,rsp)) : #f2(lsp,rsp)=row(#1(lsp,rsp))   'replace ends with rgrssn
+	next f2
+	return
+
+'***********
+'CHOP - Splice by chopping at selected point in overlap region (Even or XY spacing)
+'Go thru all files, truncate at CHOP points, and paste into big file
+1300	pcnt=0 : mc=0
+	dim x(np),y(np)
+	for f2=2 to fc+1
+	  setfile f2 : f2bi=0 : n=npts(#s) : f2ei=n-1
+	  free x2 : dim x2(n)
+	  onerror 1310					'(301JHD) add support for XDP values
+	  xkey=2560 : i=#s.#xkey(0)			'col key for 'X' column
+	  onerror -1 : goto 1315
+1310	  xkey=3728					'col key for 'XDP' column
+1315	  x2=#s.#xkey : free #s.#xkey			'(301JHD) support X & XDP
+	  if f2=2 or cpt(f2-3)<=x2(0) goto 1320 	'1st file or chop point<FFP
+	    f2bi=index0(x2<cpt(f2-3))
+1320	  if f2=fc+1 or cpt(f2-2)>=x2(n-1) goto 1340	'last file or chop point>FLP
+	    f2ei=index0(x2<cpt(f2-2))
+1340	  free x2					'dump X array
+	  #s=#s(#f2bi,#f2ei)				'truncate file
+	  mc=npts(#s)					'get new # points
+	  if xy then display				'update the X arrays?
+	  y(pcnt,pcnt+mc-1)=#f2 			'copy Y vals to array
+	  if xy then x(pcnt,pcnt+mc-1)=#s.#xkey : free #s.#xkey 	'if XY, copy X vals too (301JHD)
+	  pcnt=pcnt+mc					'total point count
+	  free x2
+	next f2
+	setfile 1 : #s=y				'inset points into big file
+	if not(xy) goto 1390
+	#s.#xkey(0,pcnt-1)=x : free #s.#xkey		'copy X values (301JHD)
+1360	#s=#s(#0,#(pcnt-1)):setffp x(0),x(pcnt-1)	'trunc xtra pts for XY
+1390	free x,y
+	return
+
+'*****************
+'Other subroutines
+'*****************
+
+'***********
+'Redisplay the splice results
+1900	string "  Splice  |  Performing splice calculations, please wait....",-61
+	escoff 1 : waiton			'cant stop it now!
+	setfile 1 : noshow			'dump old big file
+	gosub 2100				'create new big file
+	gosub 2000				'reload data files
+	if le<re goto 1910			'if hi-lo make lo-hi for calc
+	  viewtrace 2 : setfile 1 : setleft re,le
+	  viewtrace 1
+	  for i=2 to fc+1
+	    setfile i : setleft re,le
+	  next i
+1910	if ar<>0 then gosub 2200		'Y adjust to Absolute ref file
+
+	gosub 1000+(ol*100)			'do the splice
+	if le<re goto 1920			'back to hi-lo, if necessary
+	  viewtrace 2 : setfile 1 : setleft le,re
+	  viewtrace 1
+	  for i=2 to fc+1
+	    setfile i : setleft le,re
+	  next i
+1920	viewtrace 2 : setfile 1 : autoscale	'and show it
+	setleft le,re : see
+	escoff 0 : waitoff
+	update=true : return
+
+'***********
+'Reload files in SNAME into slots, and re-interpolate to big file (Even only)
+2000	for i=1 to fc
+	 setfile 2 : noshow
+	next i
+	loadspc $sname(fc-1)
+	swapfile #1,#2 : setfile 2 : viewtrace 1 : setcolor clr(fc-1-int((fc-1)/8)*8)
+	setleft le,re : setmin by-(yr*0.1),ty+(yr*0.1)
+	if not(xy) then #s=(#1*0)+#s
+	for i=fc-2 to 0 step -1
+	  loadspc $sname(i) : setcolor clr(i-int(i/8)*8)
+	  setleft le,re :  setmin by-(yr*0.1),ty+(yr*0.1)
+	  if not(xy) then #s=(#1*0)+#s
+	next
+	viewtrace 2 : setfile 1 : setleft le,re : setcolor blue
+	return
+
+'************
+'Create big file to hold splice result
+2100	setfile 1
+	if not(xy) and im=0 then np=abs((re-le)/res)+1	'final npts if evenly spaced
+	newspc splice(np,ttyp) : setffp le,re		'create big file for spliced data
+	setxtype xt : setytype yt			'set units
+	viewtrace 1 : setfile 2 			'set Y scaling and display limits
+	onerror 2110					'(301JHD) add support for XDP values
+	xkey=2560 : i=#s.#xkey(0)			'col key for 'X' column
+	onerror -1 : goto 2115
+2110	xkey=3728					'col key for 'XDP' column
+2115	if xy then fillbeg le : fillinc (re-le)/(np-1) : #s.#xkey=fill(#s) : free #s.#xkey	'(301JHD)
+	yr=(ty-by) : setmin by-(yr*0.1),ty+(yr*0.1) : setleft le,re
+	viewtrace 2 : setfile 1
+	yr=(ty-by) : setmin by-(yr*0.1),ty+(yr*0.1) : setleft le,re
+	viewtrace 0
+	return
+
+'************
+'Average Y-shift files to Absolute reference file
+2200	' if ol=3 goto 2300		'<<<<NOT USED
+	free x1,x2
+	if ar=fc goto 2250
+	for f2=ar+2 to fc+1
+	  f1=f2-1
+	  setfile f1 : dim x1(npts(#s))
+	  onerror 2210					'(301JHD) add support for XDP values
+	  xkey=2560 : i=#s.#xkey(0)			'col key for 'X' column
+	  onerror -1 : goto 2215
+2210	  xkey=3728					'col key for 'XDP' column
+2215	  x1=#s.#xkey					'(301JHD)
+	  ex=getflp()
+	  setfile f2 : dim x2(npts(#s))
+	  x2=#s.#xkey					'(301JHD)
+	  bx=getffp()
+	  if (ex<bx) goto 2220				'no overlap?
+	  x1=abs(x1-bx) : x2=abs(x2-ex)
+	  f1bi=index0(x1-min(x1)) : f1ei=npts(x1)-1
+	  f2bi=0 : f2ei=index0(x2-min(x2))
+	  f1av=sum(#f1(#f1bi,#f1ei))/(f1ei-f1bi+1)	'calc Y average in overlap regn
+	  f2av=sum(#f2(#f2bi,#f2ei))/(f2ei-f2bi+1)	'+1 added for 1 pt case (301JHD)
+2215	  #f2=#f2-(f2av-f1av)				'shift Y absolute to previous file
+2220	  free x1,x2
+	next f2
+
+2250	if ar=1 goto 2290
+	for f2=ar+1 to 3 step -1
+	  f1=f2-1
+	  setfile f1 : dim x1(npts(#s))
+	  onerror 2260					'(301JHD) add support for XDP values
+	  xkey=2560 : i=#s.#xkey(0)			'col key for 'X' column
+	  onerror -1 : goto 2265
+2260	  xkey=3728					'col key for 'XDP' column
+2265	  x1=#s.#xkey					'(301JHD)
+	  ex=getflp()
+	  setfile f2 : dim x2(npts(#s))
+	  x2=#s.#xkey					'(301JHD)
+	  bx=getflp()
+	  if (ex<bx) goto 2270				'no overlap?
+	  x1=abs(x1-bx) : x2=abs(x2-ex)
+	  f1bi=index0(x1-min(x1)) : f1ei=npts(x1)-1
+	  f2bi=0 : f2ei=index0(x2-min(x2))
+	  f1av=sum(#f1(#f1bi,#f1ei))/(f1ei-f1bi+1)	'calc Y average in overlap regn
+	  f2av=sum(#f2(#f2bi,#f2ei))/(f2ei-f2bi+1)	'+1 added for 1 pt case (301JHD)
+	  #f1=#f1-(f1av-f2av)				'shift Y absolute to next file
+2270	  free x1,x2
+	next f2
+2290	return
+
+'************
+'Chop Y-shift files to Absolute reference file
+2300	free x1,x2
+	if ar=fc goto 2350
+	for f2=ar+2 to fc+1
+	  f1=f2-1
+	  setfile f1 : dim x1(npts(#s)) 		'(301JHD)
+	  onerror 2310					'(301JHD) add support for XDP values
+	  xkey=2560 : i=#s.#xkey(0)			'col key for 'X' column
+	  onerror -1 : goto 2315
+2310	  xkey=3728					'col key for 'XDP' column
+2315	  x1=#s.#xkey : ex=#s.#xkey(0)			'(301JHD)
+	  setfile f2 : dim x2(npts(#s))
+	  x2=#s.#xkey : bx=#s.#xkey(npts(#s)-1) 	'(301JHD)
+	  if (ex<bx) goto 2320				'no overlap?
+	  x1=abs(x1-cpt(f2-3)) : x2=abs(x2-cpt(f2-3))
+	  f1bi=index0(x1-min(x1))
+	  f2ei=index0(x2-min(x2))
+	  f1y=#f1(#f1bi) : f2y=#f2(#f2ei)		'Y values at chop points
+	  #f2=#f2-(f2y-f1y)				'shift Y absolute to previous file
+2320	  free x1,x2
+	next f2
+
+2350	if ar=1 goto 2390
+	for f2=ar+1 to 3 step -1
+	  f1=f2-1
+	  setfile f1 : dim x1(npts(#s)) 		'(301JHD)
+	  onerror 2360					'(301JHD) add support for XDP values
+	  xkey=2560 : i=#s.#xkey(0)			'col key for 'X' column
+	  onerror -1 : goto 2365
+2360	  xkey=3728					'col key for 'XDP' column
+2365	  x1=#s.#xkey : ex=#s.#xkey(0)			'(301JHD)
+	  setfile f2 : dim x2(npts(#s))
+	  x2=#s.#xkey : bx=#s.#xkey(npts(#s)-1) 	'(301JHD)
+	  if (ex<bx) goto 2370				'no overlap?
+	  x1=abs(x1-cpt(f2-3)) : x2=abs(x2-cpt(f2-3))
+	  f1bi=index0(x1-min(x1))
+	  f2ei=index0(x2-min(x2))
+	  f1y=#f1(#f1bi) : f2y=#f2(#f2ei)		'Y values at chop points
+	  #f1=#f1-(f1y-f2y)				'shift Y absolute to previous file
+2370	  free x1,x2
+	next f2
+2390	return
+
+'*********
+'Reselect CHOP points
+2400	viewtrace 2 : flipon
+	free btx,tf : dim btx(npts(cpt)),tf(npts(cpt))
+	flipon
+	lx=getleft() : rx=getright() : by=getmin() : my=getmax()
+	btx=((cpt-lx)/(rx-lx))*(brx-blx)+blx		'convert chop pts to screen units
+
+'Display whole data files
+	escoff 1 : waiton			'cant stop it now!
+	gosub 2000				'reload data files
+	viewtrace 2 : setfile 1
+	setleft le,re : autoscale		'and show big file
+2405	see
+	escoff 0 : waitoff
+
+'Start pointing to stuff
+2410	string "  Splice  |  Select Chop point to move.  Double click in lower box to return to Options.",-61
+	viewpoint 0,1,num,cx,cy
+	cst=(clock(-1)/100)+clock(-2)				'get Secs+hundredths
+	if num=128 then return					'Esc pressed?
+	if cx<blx or cx>brx or cy<bby or cy>bty goto 2410	'clicked on trace box?
+
+	tf=abs(btx-cx)
+	if index0(tf>0.02)>=npts(cpt) goto 2450 	'within 2% of a point?
+	pt=index0(tf-min(tf))				'find closest chop point
+
+	if le>re goto 2415				'is it hi-lo order?
+	setfile (pt+3) : fp=getffp()			'chop points in overlap region
+	setfile (pt+2) : lp=getflp() : setfile 1
+	goto 2417
+2415	setfile (pt+3) : lp=getflp()			'chop points in overlap region
+	setfile (pt+2) : fp=getffp() : setfile 1
+
+2417	lox=((fp-lx)/(rx-lx))*(brx-blx)+blx		'convert to screen units
+	rox=((lp-lx)/(rx-lx))*(brx-blx)+blx
+	viewedit 0,4+fc+pt,16,white			'blank out point for redraw
+	viewedit 0,4+fc+pt,17,white
+
+'Move Chop point in real time
+2420	string "  Splice  |  Move Chop point to new position, and release.",-61
+	ptx=cx : goto 2427
+2425	ctx=cx
+	viewpoint 0,0,mbttn,cx,cy
+	if mbttn>=12 goto 2430
+	if cx=ctx goto 2425
+2427	ptx=cx
+	if ptx<lox then ptx=lox
+	if ptx>rox then ptx=rox
+	gosub 2490 : goto 2425
+
+'Button released
+2430	cpt(pt)=((ptx-blx)/(brx-blx))*(rx-lx)+lx	'convert cursor to X units
+	btx=((cpt-lx)/(rx-lx))*(brx-blx)+blx
+	viewedit 0,4+fc+pt,16,black
+	viewedit 0,4+fc+pt,17,white
+	viewedit 0,4+fc+pt,37,cpt(pt)
+	see : viewtrace 0 : setfile 1
+	onerror -1 : goto 2410
+
+'Test double click for return
+2450	viewpoint 0,0,mbttn,cx,cy
+	if mbttn<12 goto 2450			'is button still down?
+2455	viewpoint 0,0,mbttn,cx,cy		'button up, wait for next down
+	tm=((clock(-1)/100)+clock(-2)-cst)
+	if mbttn>=12 and tm<dclk goto 2455
+	if tm<dclk then return			'yes, double click
+	goto 2410				'no, get next pointer
+
+'View update and line drawing
+2490	viewtrace 2 : edisplay			'RT display
+	plotbox lox,bby,rox,bty,1,blue	
+	printfont 2,0,10,90,"Arial"		'90 deg rotated, Arial 10
+	px=((ptx-blx)/(brx-blx))*(rx-lx)+lx	'convert cursor to x units
+	px=rnd(px*100)/100			'truncate
+	pauseoff
+	printloc ptx+.0075,bty-0.075 : print px   'print X value of chop point
+	return
+
+'Clean up and return
+2495	free btx,tf,lox,rox,px,ptx,cx,cy
+	return
+
+'***********
+'Draw/erase marks for CHOP points
+2500	onerror 2590
+	if zt<3 then viewedit -2,4+fc : goto 2590
+	for i=0 to fc-2
+	  viewedit 4,0.1,0.4,0.87,0.5,0,1,#0,cpt(i),""
+	  viewedit 0,4+fc+i,15,black
+	  viewedit 0,4+fc+i,16,black
+	  viewedit 0,4+fc+i,17,white
+	next
+2590	onerror -1
+	see : return
+
+'**************
+'Error messages
+'**************
+9000	free icon : dim icon(256)
+	icon=0 : string icon,-59
+	string icon=$icon+"ABICONS.DLL#0"		'get icon
+	onerror 10000					'|__OK__ buttons same as Esc	
+	goto 9000+(err*10)
+
+9010	dialogon "Splice Error"
+	dialogloc 1,-70,8  : dialogtxt 1,0,0,$icon
+	dialogloc 1,-40,6  : print "Units mismatch error."
+	dialogloc 1,-40,16 : print "All files must have same X and Y axis unit types."
+	dialogloc 3,0,30   : dialogask mc,4,0,0,"|___&OK___"
+	dialogoff
+
+9020	dialogon "Splice Error"
+	dialogloc 1,-70,8  : dialogtxt 1,0,0,$icon
+	dialogloc 1,-40,6  : print "Data point spacing mismatch error."
+	dialogloc 1,-40,16 : print "Must use either all Even X files or all XY files."
+	dialogloc 3,0,30   : dialogask mc,4,0,0,"|___&OK___"
+	dialogoff
+
+9030	dialogon "Splice Error"
+	dialogloc 1,-70,8  : dialogtxt 1,0,0,$icon
+	dialogloc 1,-40,6  : print "Too few files selected.  At least 2 files required."
+	dialogloc 1,-40,16 : print "Use 'File List' button to select multiple files."
+	dialogloc 3,0,30   : dialogask mc,4,0,0,"|___&OK___"
+	dialogoff
+
+
+'*****************
+'Clean up and exit
+'*****************
+10000	string "",-61				'restore status line
+	onerror 10010
+	if not(update) then zf=1 : goto 10001
+	  zf=2 : setfile 1 : gosub 62000
+10001	onerror 10010 : setfile zf : noshow : goto 10001
+10010	end
+
+'**********************
+'Audit trail subroutine
+'**********************
+62000	if not(xy) then portout addmod,9	'audit trail (I)
+	portout addmod,20			'audit trail (T)
+	temp=0
+	string temp="Spliced data from "+fc
+	string temp=$temp+" files" : string temp,-6	'set memo line
+	dblog #0,-1,mc : if mc=0 then return	'Autologging turned on?
+
+	temp=0 : string temp="SPLICE= "
+	if xy then string temp=$temp+"XY traces"
+	if not(xy) then string temp=$temp+"Even traces"
+	dblog #0, -3, $temp
+	temp=0 : string temp="Interpolation: "
+	if xy then string temp=$temp+"None" : goto 62010
+	if im=0 then string temp=$temp+"Auto"
+	if im=1 then string temp=$temp+np : string temp=$temp+" points"
+62010	dblog #0, -3, $temp
+	temp=0 : string temp="Overlap: "
+	if ol=0 then string temp=$temp+"Weighted"
+	if ol=1 then string temp=$temp+"Average"
+	if ol=2 then string temp=$temp+"Regress"
+	if ol=3 then string temp=$temp+"Chop"
+	dblog #0, -3, $temp
+	if ol<3 goto 62020
+	temp=0 : string temp="Splice points: "
+	for i=0 to fc-2
+	  string temp=$temp+cpt(i)
+	  if i<fc-2 then string temp=$temp+", "
+	next
+62020	temp=0 : string temp="Absolute Y file: "
+	if ar=0 then string temp=$temp+"None"
+	if ar>0 then string temp=$temp+ar
+	temp=0 : string temp="Files: "
+	dblog #0, -3, $temp
+	for i=0 to fc-1
+	  dblog #0, -3, $sname(i)
+	next
+	return
+
+'********************************
+'SPLICE.AB Internal Documentation
+'********************************
+65000
+
+Splices together traces that span different ranges in the X axis.  Trace files
+must have same X and Y unit types, and must all be the same XY mode (either all
+evenly spaced X or all XY).  Only single trace files are supported (no multi-files).
+Traces are always spliced in lo-to-hi order on the X axis, regardless of the X unit
+type (backwards for IR & NMR users) however, they will be displayed in the correct
+orientation.
+
+Before splicing, the traces may be Y-shifted in order to splice together smoothly. This
+is accomplished by desinating one trace in the set of traces is as the "Absolute"
+file.  All other traces are Y-shifted relative to this trace by taking the difference
+between the average of the data points in the overlap region, and subtracting this "Y 
+Shift Factor" from all the points in the relative file.  The Y values of the "Absolute"
+file remain unchanged.	If the adjacent traces do not overlap, then no Y shifting is done
+for that trace.  This option can be turned on/off by selecting "None" for the "Absolute
+Region Number".
+
+There are 4 algorithms used to determine the Y values in the overlapping regions of
+adjacent traces:
+
+  WEIGHTED:  A linearly weighted addition of all points in the overlapping region.
+  The data points in the overlap region of left-most file are multiplied by a sloped
+  line that starts at Y=1 at the left edge of the overlap region to Y=0 at the FLP
+  value.  The overlap region in the other trace is multiplied by a line with the
+  opposite slope (left:Y=0 , right:Y=1) starting at FFP and going to the right edge
+  of the overlap region.
+
+  AVERAGE:  The paired Y values in the overlapping region are averaged (Y1+Y2)/2 to
+  produce the Y values in the final spliced trace.
+  REGRESS:  The paired Y values in the overlap region are used in a linear regression
+  to calculate a slope & offset factor.  The data points in the left-most file are used
+  as the independent (X) values, and the points in the other file are used as the
+  dependent (Y) values.  The generated line is used to replace the data points in the
+  overlap region by using the stored X array values to predict the Y values.  This only
+  works well when the overlap region is baseline data and the Y values have been shifted
+  to an absolute reference file.
+
+  CHOP:  The user must select a point in each overlap region.  Y values in the final
+  spliced trace will be set by taking all points in the left-most trace to the left of
+  the chop point.  The remaining points will be taken from the region to right of the
+  chop point in the adjacent trace.
+
+For evenly spaced data, all files are interpolated to match the highest resolution
+trace (AUTO) or a user specified numbr of points.  Also, if adjacent traces do not overlap,
+the Y values in between are set to zero (even spaced) or simply connected (XY). For XY type
+traces, only the CHOP method is allowed.
+
+GRAMSSUITE.CHM JUMP POINTS
+  1800 Main Menu
+
+
+MRU History
+-----------
+301JHD	12/14/94	Fixed bug in X limits reader that only supported "X" single precision
+			  key.	Now also supports "XDP" double precision key. Mostly only affects
+			  XY files.
+			Fixed bug in WEIGHTED method.  Caused "/ by 0" error if only 1 point
+			  overlapped.
+			Look for ABICONS.DLL in GRAMS.EXE dir (-59), not home dir (-35).
+			Fixed bug in all methods that incorrectly calculated the overlap points
+			  if overlap was only 1 point.	Now just averages the values if overlap
+			  is only 1 point no mater what method is chosen (except CHOP).
+			Fixed "/ by 0" bug in Absolute Y calculations if only 1 point of overlap.
+			Fixed bug in method selection that caused WEIGHTED to be used most of the
+			  time, except when switched to CHOP, then back.
