@@ -1,0 +1,20 @@
+﻿  stdafx.cpp
+  dllmain.cpp
+  AjusteMinimosCuadrados.cpp
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(115): warning C4778: 'printf' : cadena de formato sin terminar '%'
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(115): warning C4474: "printf": se pasaron demasiados argumentos para la cadena de formato
+  c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(115): note: los marcadores de posición y sus parámetros esperan 0 argumentos variádicos, pero se proporcionaron 1
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(219): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\stdio.h(205): note: vea la declaración de 'fopen'
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(286): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: vea la declaración de 'strcpy'
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(290): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: vea la declaración de 'strcpy'
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(205): warning C4101: 'ch2': variable local sin referencia
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(210): warning C4101: 'suma': variable local sin referencia
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(314): warning C4101: 'e': variable local sin referencia
+c:\users\garci-mn\documents\visual studio 2015\projects\ajusteminimoscuadrados\ajusteminimoscuadrados\ajusteminimoscuadrados.cpp(313): warning C4101: 't': variable local sin referencia
+  Generando código...
+     Creando biblioteca C:\Users\garci-mn\documents\visual studio 2015\Projects\AjusteMinimosCuadrados\x64\Debug\AjusteMinimosCuadrados.lib y objeto C:\Users\garci-mn\documents\visual studio 2015\Projects\AjusteMinimosCuadrados\x64\Debug\AjusteMinimosCuadrados.exp
+  AjusteMinimosCuadrados.vcxproj -> C:\Users\garci-mn\documents\visual studio 2015\Projects\AjusteMinimosCuadrados\x64\Debug\AjusteMinimosCuadrados.dll
+  AjusteMinimosCuadrados.vcxproj -> C:\Users\garci-mn\documents\visual studio 2015\Projects\AjusteMinimosCuadrados\x64\Debug\AjusteMinimosCuadrados.pdb (Full PDB)
